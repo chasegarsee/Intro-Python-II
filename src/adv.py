@@ -28,66 +28,53 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+player = Player("Garsee", room["outside"])
+
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-current_room = "outside"
-name = input("Enter Your Name: ")
+
+
+print(f"\n------------------------------")
+print(f"\n{player.current_room.title}")
+print(f"\n   {player.current_room.description}\n")
+
+
+def print_room(room):
+    print(f"\n------------------------------")
+    print(f"\n{room.title}")
+    print(f"\n   {room.description}\n")
+
+
+current_room = player.current_room
+print_room(current_room)
+
+valid_directions = ["n", "s", "e", "w"]
 
 while True:
-    player = Player(name, current_room)
-    playerRoom = Room(room[current_room].name, room[current_room].description)
-    print(player)
-    print(playerRoom)
+    # Print the current room title and description
+    current_room = player.current_room
+    # Wait for user input
+    cmd = input("-> ")
+    # Parse User Inputs (n, s, e, w, q)
+    if cmd in valid_directions:
+        direction = cmd
+        if getattr(player.current_room, f"{direction}_to") == None:
+            print("Sorry, No Room Here!", "\n")
+        else:
+            player.current_room = getattr(
+                player.current_room, f"{direction}_to")
+            print_room(player.current_room)
 
-    direction = input(
-        "Input Direction: w(north) - s(south) - d(east) - a(west): ")
+    elif cmd == "q":
+        print("GOODBYE!")
+        exit()
+    else:
+        print("Invalid Command")
 
 
-# If the user enters "q", quit the game.
-    if direction == "q":
-        break
-    elif current_room == "outside":
-        if direction == "a":
-            current_room = "foyer"
-        else:
-            print("Movement Not Allowed")
-            continue
-    elif current_room == "foyer":
-        if direction == "s":
-            current_room = "outside"
-        elif direction == "a":
-            current_room == "overlook"
-        elif direction == "d":
-            direction == "narrow"
-        else:
-            print("That movement is not allowed")
-            continue
-    elif current_room == "overlook":
-        if direction == "s":
-            current_room = "foyer"
-        else:
-            print("That movement is not allowed")
-            continue
-    elif current_room == "narrow":
-        if direction == "a":
-            current_room = "foyer"
-        elif direction == "a":
-            current_room = "treasure"
-        else:
-            # Print an error message if the movement isn't allowed.
-            print("That movement is not allowed")
-            continue
-    elif current_room == "treasure":
-        if direction == "s":
-            current_room = "narrow"
-        else:
-            print("That movement is not allowed")
-            continue
-
-print("SEE YA!! Thanks for Playing!")
 # Write a loop that:
 #
 # * Prints the current room name
