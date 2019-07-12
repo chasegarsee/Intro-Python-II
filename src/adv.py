@@ -1,5 +1,6 @@
 from player import Player
 from room import Room
+from item import Item, Food
 
 # Declare all the rooms
 
@@ -28,56 +29,40 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-player = Player("Garsee", room["outside"])
+player = Player("ZarLord", room["outside"])
 
-#
-# Main
-#
+rock = Item("Rock", "Tis a rock good sir.")
+gold = Item("Gold", "Brick of Gold.")
+sword = Item("Sword", "Broad Sword")
+shield = Item("Shield", "Round, Metal, Heavy Shield")
+bread = Food("Bread", "Food For Energy", 100)
 
-# Make a new player object that is currently in the 'outside' room.
+room["outside"].items.append(rock)
+room["treasure"].items.append(gold)
+room["narrow"].items.append(sword)
+room["overlook"].items.append(shield)
 
-
-print(f"\n------------------------------")
-print(f"\n{player.current_room.title}")
-print(f"\n   {player.current_room.description}\n")
-
-
-def print_room(room):
-    print(f"\n------------------------------")
-    print(f"\n{room.title}")
-    print(f"\n   {room.description}\n")
+player.items.append(sword)
+player.items.append(bread)
 
 
 current_room = player.current_room
-print_room(current_room)
+print(current_room)
 
 valid_directions = ["n", "s", "e", "w"]
 
 while True:
-    # Print the current room title and description
-    current_room = player.current_room
     # Wait for user input
     cmd = input("-> ")
     # Parse User Inputs (n, s, e, w, q)
     if cmd in valid_directions:
-        direction = cmd
-        if getattr(player.current_room, f"{direction}_to") == None:
-            print("Sorry, No Room Here!", "\n")
-        else:
-            player.current_room = getattr(
-                player.current_room, f"{direction}_to")
-            print_room(player.current_room)
-
+        player.travel(cmd)
+    elif cmd == "i":
+        player.print_inventory()
+    elif cmd == "eat":
+        player.eat("bread")
     elif cmd == "q":
         print("GOODBYE!")
         exit()
     else:
         print("Invalid Command")
-
-
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-# * If the user enters a cardinal direction, attempt to move to the room there.
